@@ -44,7 +44,8 @@ while True:
     line = ""
     for j, (gen, w) in enumerate(zip(gens, widths)):
         try: p = next(gen)
-        except: p = " "*(w); done += 1
+        except StopIteration: p = " "*(w); done += 1
+        except FileNotFoundError: print("Couldn't open file: %s"%(files[j]), file=sys.stderr); exit(1)
         line += start + p + end + ("" if j+1==total else vert)
     if done==total: break
     print(line)
