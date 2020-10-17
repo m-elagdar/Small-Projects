@@ -37,7 +37,7 @@ if len(files)==1: files *= 2
 total = len(files)
 ss = len(sep)
 widths = [math.ceil(width/total)-ss for _ in range(total)]
-widths[0] = width - sum(widths[:-1]) - (total*ss-1)
+widths[0] = width - sum(widths[:-1]) - (total-1)*ss
 gens = tuple(generator(f, w) for f, w in zip(files, widths))
 
 while True:
