@@ -8,7 +8,7 @@ import sys, shutil
 fix = True
 
 fsi, pdi = "\u2068", "\u2069"
-vert = "│"
+sep = "│"
 start, end = "", ""
 if fix: start, end = fsi, pdi
 width, height = shutil.get_terminal_size((80, 25))
@@ -35,8 +35,9 @@ files = sys.argv[1:]
 if len(files)==0: print("Usage: %s file1 file2..."%(__file__), file=sys.stderr); exit(1)
 if len(files)==1: files *= 2
 total = len(files)
-widths = [math.ceil(width/total)-1 for _ in range(total)]
-widths[-1] = width - sum(widths[:-1]) - (total-1)
+ss = len(sep)
+widths = [math.ceil(width/total)-ss for _ in range(total)]
+widths[0] = width - sum(widths[:-1]) - (total*ss-1)
 gens = tuple(generator(f, w) for f, w in zip(files, widths))
 
 while True:
@@ -46,6 +47,6 @@ while True:
         try: p = next(gen)
         except StopIteration: p = " "*(w); done += 1
         except FileNotFoundError: print("Couldn't open file: %s"%(files[j]), file=sys.stderr); exit(1)
-        line += start + p + end + ("" if j+1==total else vert)
+        line += start + p + end + ("" if j+1==total else sep)
     if done==total: break
     print(line)
