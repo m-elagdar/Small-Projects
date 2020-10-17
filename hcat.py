@@ -36,7 +36,7 @@ if len(files)==0: print("Usage: %s file1 file2..."%(__file__), file=sys.stderr);
 if len(files)==1: files *= 2
 total = len(files)
 ss = len(sep)
-widths = [math.ceil(width/total)-ss for _ in range(total)]
+widths = [(math.ceil if i==0 else math.floor)(width/total)-ss for i in range(total)]
 widths[0] = width - sum(widths[:-1]) - (total-1)*ss
 gens = tuple(generator(f, w) for f, w in zip(files, widths))
 
