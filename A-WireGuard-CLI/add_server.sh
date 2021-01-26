@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 # -*- coding: utf-8 -*-
 set -e
-stt=$SECONDS; trap 'echo Total duration: $(($SECONDS-$stt)) seconds' EXIT
 
 keys_dir=~/.wireguard
 if ! [ -f "$keys_dir"/private ] || ! [ -f "$keys_dir"/public ]; then

@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 # -*- coding: utf-8 -*-
 set -e
-stt=$SECONDS; trap 'echo Total duration: $(($SECONDS-$stt)) seconds' EXIT
 
 net=1
 lan_name=enp1s0
