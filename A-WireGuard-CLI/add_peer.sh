@@ -44,7 +44,7 @@ interface=${conf_file%.conf}
 sudo wg syncconf "$interface" <(sudo wg-quick strip "$interface") || { wg-quick down "$interface"; wg-quick up "$interface"; }
 
 peer_conf_file=client1.conf
-log "Peer added successfully, here's the peer's suggested config saved to $peer_conf_file. Please replace <client's privatekey> or use add_server.sh"
+log "Peer added successfully, here's the peer's suggested config saved to $peer_conf_file. Please replace <client privatekey> or use add_server.sh"
 tee $peer_conf_file << EOF
 [Interface]
 Address = $ip
