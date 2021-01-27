@@ -3,17 +3,18 @@
 set -e
 
 net=1
-lan_name=enp1s0
+: ${lan_name:=$(ip route | grep default | grep -oP "(?<=dev )\S+")}
+echo "Setting interface for network forwarding to $lan_name"
 server_wireguard_address=172.$net.1.1
 
-conf_file=server$net.conf
+: ${conf_file:=server$net.conf}
 
 keys_dir=~/.wireguard
 #sudo apt install wireguard
 
 if ! [ -f "$keys_dir"/private ] || ! [ -f "$keys_dir"/public ]; then
     mkdir -p "$keys_dir"
-    sudo wg genkey | tee "$keys_dir"/private | wg pubkey > "$keys_dir"/public
+    (umask 077; sudo wg genkey | tee "$keys_dir"/private | wg pubkey > "$keys_dir"/public)
 fi
 
 if ! sudo [ -f /etc/wireguard/$conf_file ]; then

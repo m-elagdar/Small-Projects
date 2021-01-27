@@ -6,3 +6,7 @@
 
 ## Steps for the client
 1. Run add_peer.sh
+
+
+## References
+1. [How to easily configure WireGuard - Stavros' Stuff](https://www.stavros.io/posts/how-to-configure-wireguard/)

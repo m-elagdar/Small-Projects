@@ -9,11 +9,15 @@ ip="$3" # optional
 shared_net="192.168.0.0/16"
 net=1
 server_wireguard_address=172.$net.1.1
-conf_file=server$net.conf
+: ${conf_file:=server$net.conf}
 keys_dir=~/.wireguard
+peer_names=$keys_dir/peer_names
 
-if [ -z "$client_public_key" ]; then read -p "Please enter the client's public (key): " client_public_key; fi
-if [ -z "$server_public_ip" ]; then read -p "Please enter the server's public (ip): " server_public_ip; fi
+if ! sudo [ -f /etc/wireguard/"$conf_file" ]; then echo "[ERROR] The server config is not initialized. Please run init_server.sh or set \$conf_file"; exit 1; fi 
+
+if [ -z "$client_public_key" ]; then read -p "Please enter the CLIENT's public KEY: " client_public_key; fi
+if [ -z "$server_public_ip" ]; then read -p "Please enter the SERVER's public IP: " server_public_ip; fi
+read -p "[Optional] Please enter a name for the for keeping a list in $peer_names: " client_name; echo "${client_name:=unnamed} $client_public_key" >> $peer_names
 
 if [ -z "$ip" ]; then 
     # Get a new free ip
@@ -44,7 +48,7 @@ log "Peer added successfully, here's the peer's suggested config saved to $peer_
 tee $peer_conf_file << EOF
 [Interface]
 Address = $ip
-PrivateKey = <client's privatekey>
+PrivateKey = <client privatekey>
 ListenPort = 21841
 
 [Peer]

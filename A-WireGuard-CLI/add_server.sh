@@ -5,7 +5,7 @@ set -e
 keys_dir=~/.wireguard
 if ! [ -f "$keys_dir"/private ] || ! [ -f "$keys_dir"/public ]; then
     mkdir -p "$keys_dir"
-    sudo wg genkey | tee "$keys_dir"/private | wg pubkey > "$keys_dir"/public
+    (umask 077; sudo wg genkey | tee "$keys_dir"/private | wg pubkey > "$keys_dir"/public)
 fi
 
 echo "Please share this key with your server/peer then press enter"
@@ -17,7 +17,7 @@ printf "Please add the config file received from your server/peer to /etc/wiregu
 conf_file=${conf_file_:-$conf_file}
 if ! sudo [ -f "/etc/wireguard/$conf_file" ]; then echo "Error: file not found /etc/wireguard/$conf_file. Please add it and try again"; exit 1; fi
 
-sudo sed "s/<client's privatekey>/$(cat "$keys_dir"/private)/" "/etc/wireguard/$conf_file" -i
+sudo sed "s/<client privatekey>/$(cat "$keys_dir"/private)/" "/etc/wireguard/$conf_file" -i
 echo "Configuration file update successfully with your private key"
 
 interface=${conf_file%.conf}
