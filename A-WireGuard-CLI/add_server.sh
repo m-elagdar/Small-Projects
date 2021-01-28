@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 set -e
 
+if ! command -v wg-quick &> /dev/null; then echo "[ERROR] WireGuard is not installed. Please visit https://www.wireguard.com/install/"; exit 1; fi
+
 keys_dir=~/.wireguard
 if ! [ -f "$keys_dir"/private ] || ! [ -f "$keys_dir"/public ]; then
     mkdir -p "$keys_dir"
@@ -23,5 +25,5 @@ echo "Configuration file update successfully with your private key"
 interface=${conf_file%.conf}
 wg-quick up "$interface"
 
-echo "Connection initiated. You may stop it with: 'wg-quick down $interface' and start it again with 'wg-quick up $interface'"
+echo -e "\nConnection initiated. You may stop it with: 'wg-quick down $interface' and start it again with 'wg-quick up $interface'"
 
