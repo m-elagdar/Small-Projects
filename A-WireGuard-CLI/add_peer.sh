@@ -36,27 +36,32 @@ log "Appending client to /etc/wireguard/$conf_file with ip: $ip"
 sudo tee -a /etc/wireguard/"$conf_file" << EOF > /dev/null
 [Peer]
 PublicKey = $client_public_key
-AllowedIPs = ${ip} 
+AllowedIPs = $ip
 
 EOF
 log "Server configuration edited"
 
 # Update running service
 interface=${conf_file%.conf}
-sudo wg syncconf "$interface" <(sudo wg-quick strip "$interface") || { wg-quick down "$interface"; wg-quick up "$interface"; }
+sudo bash -c "wg syncconf \"$interface\" <(wg-quick strip \"$interface\")"
+
+logp "\nDid the server share a network {$shared_net, no}: "; read shared_net_;
+if [ -z $shared_net_ ]; then shared_net_s=", $shared_net";
+elif [[ $shared_net_ =~ .*\..* ]]; then shared_net_s=", $shared_net_";
+else shared_net_s=; fi
 
 peer_conf_file=client1.conf
-log -e "\nPeer added successfully, here's the peer's suggested config saved to $peer_conf_file. Please replace <client privatekey> or use add_server.sh\n"
+log -e "\nPeer added successfully, here's the peer's suggested config saved to $peer_conf_file. Please ask the client to replace <client privatekey> or use add_server.sh\n"
 tee $peer_conf_file << EOF
 [Interface]
-Address = $ip
 PrivateKey = <client privatekey>
+Address = $ip
 ListenPort = 21841
 
 [Peer]
 PublicKey = $(cat "$keys_dir"/public)
 Endpoint = $server_public_ip:51820
-AllowedIPs = $server_wireguard_address, $shared_net
+AllowedIPs = $server_wireguard_address$shared_net_s
 
 EOF
 

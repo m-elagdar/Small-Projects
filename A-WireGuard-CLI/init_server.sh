@@ -23,8 +23,8 @@ fi
 if ! sudo [ -f /etc/wireguard/$conf_file ]; then
 sudo tee /etc/wireguard/$conf_file << EOF > /dev/null
 [Interface]
-Address = $server_wireguard_address
 PrivateKey = $(cat "$keys_dir"/private)
+Address = $server_wireguard_address
 ListenPort = 51820
 
 EOF
@@ -35,7 +35,7 @@ PostUp   = iptables -A FORWARD -i %i -j ACCEPT; iptables -A FORWARD -o %i -j ACC
 PostDown = iptables -D FORWARD -i %i -j ACCEPT; iptables -D FORWARD -o %i -j ACCEPT; iptables -t nat -D POSTROUTING -o $lan_name -j MASQUERADE
 
 EOF
-printf "\nYour should now add/uncomment \"net.ipv4.ip_forward = 1\" in /etc/sysctl.d/99-sysctl.conf or /etc/sysctl.conf\nThen run \"sudo sysctl -p\" and make sure the line is printed.\n\nPress enter when done "; read;
+printf "\nYou should now add/uncomment \"net.ipv4.ip_forward = 1\" in /etc/sysctl.d/99-sysctl.conf or /etc/sysctl.conf\nThen run \"sudo sysctl -p\" and make sure the line is printed.\n\nPress enter when done "; read;
 fi
 
 else echo "Not replacing /etc/wireguard/$conf_file. You may delete it and rerun the script"; fi
